@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using HouseController.Extensions;
+using Microsoft.Extensions.Logging;
 
 namespace HouseController
 {
@@ -14,7 +15,7 @@ namespace HouseController
 					fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 					fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
 				});
-
+			builder.ConfigureHouseController();
 #if DEBUG
 			builder.Logging.AddDebug();
 #endif

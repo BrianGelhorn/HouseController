@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+	x:Class="HouseController.Views.ConnectPage"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:Fakes="clr-namespace:HouseController.Fakes"
+	Title="Startup">
+	<ContentPage.Resources>
+		<ResourceDictionary>
+			<DataTemplate x:Key="AutomaticSearchDT">
+				<Border StrokeThickness="1">
+					<Label
+						Padding="16"
+						HorizontalTextAlignment="Center"
+						Text="{Binding}" />
+				</Border>
+			</DataTemplate>
+		</ResourceDictionary>
+	</ContentPage.Resources>
+	<VerticalStackLayout>
+		<Label
+			FontSize="Title"
+			HorizontalTextAlignment="Center"
+			Text="Busqueda Automatica" />
+		<Border StrokeThickness="1">
+			<CollectionView
+				BindingContext="{Fakes:FakeLists}"
+				ItemTemplate="{StaticResource AutomaticSearchDT}"
+				ItemsSource="{Binding IpList}"
+				SelectionChangedCommand="{Binding BindingContext.ConnectToDeviceCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
+				SelectionChangedCommandParameter="{Binding SelectedItem, Source={RelativeSource Self}}"
+				SelectionMode="Single" />
+		</Border>
+		<Label
+			FontSize="Title"
+			HorizontalTextAlignment="Center"
+			Text="Busqueda Manual" />
+		<Entry IsPassword="False" Keyboard="Text" />
+	</VerticalStackLayout>
+</ContentPage>
