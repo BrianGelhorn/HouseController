@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+	x:Class="HouseController.Views.CardView"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:Fake="clr-namespace:HouseController.Fakes">
+	<ContentView.Resources>
+		<ResourceDictionary>
+			<DataTemplate x:Key="TimeDt">
+				<HorizontalStackLayout Margin="8,0" HeightRequest="20">
+					<BoxView
+						HeightRequest="12"
+						WidthRequest="12"
+						Color="Green" />
+					<Label
+						FontSize="14"
+						Text="{Binding Time}"
+						VerticalTextAlignment="Center" />
+				</HorizontalStackLayout>
+			</DataTemplate>
+		</ResourceDictionary>
+	</ContentView.Resources>
+	<Border
+		Margin="4"
+		BackgroundColor="Gray"
+		StrokeShape="RoundRectangle 10"
+		StrokeThickness="1">
+		<Grid RowDefinitions="Auto, 1.5*, 2*">
+			<HorizontalStackLayout Grid.Row="0" HorizontalOptions="Center">
+				<Label FontSize="18" Text="Device Name" />
+			</HorizontalStackLayout>
+			<Grid
+				Grid.Row="1"
+				Margin="0,8,0,4"
+				ColumnDefinitions="*, *"
+				HorizontalOptions="FillAndExpand">
+				<Button
+					Grid.Column="0"
+					Margin="2,0,1,0"
+					Text="On/Off" />
+				<Button
+					Grid.Column="1"
+					Margin="1,0,2,0"
+					Text="Set Times" />
+			</Grid>
+
+			<CollectionView
+				Grid.Row="2"
+				Margin="0,10,0,0"
+				BindingContext="{Fake:FakeLists}"
+				FlowDirection="LeftToRight"
+				ItemSizingStrategy="MeasureAllItems"
+				ItemTemplate="{StaticResource TimeDt}"
+				ItemsSource="{Binding TimesList}">
+				<CollectionView.ItemsLayout>
+					<GridItemsLayout
+						Orientation="Vertical"
+						Span="3"
+						VerticalItemSpacing="10" />
+				</CollectionView.ItemsLayout>
+			</CollectionView>
+		</Grid>
+	</Border>
+</ContentView>

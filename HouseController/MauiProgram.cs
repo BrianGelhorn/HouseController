@@ -1,5 +1,7 @@
-﻿using HouseController.Extensions;
+﻿using CommunityToolkit.Maui;
+using HouseController.Extensions;
 using Microsoft.Extensions.Logging;
+
 
 namespace HouseController
 {
@@ -10,6 +12,7 @@ namespace HouseController
 			var builder = MauiApp.CreateBuilder();
 			builder
 				.UseMauiApp<App>()
+				.UseMauiCommunityToolkit()
 				.ConfigureFonts(fonts =>
 				{
 					fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

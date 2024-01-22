@@ -1,11 +1,9 @@
-﻿using HouseController.Services;
+﻿using CommunityToolkit.Maui;
+using CommunityToolkit.Maui.Core;
+using HouseController.Services;
 using HouseController.ViewModels;
 using HouseController.Views;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using HouseController.Views.PopUps;
 
 namespace HouseController.Extensions
 {
@@ -17,6 +15,9 @@ namespace HouseController.Extensions
 			builder.Services.AddTransient<ConnectPageViewModel>();
 			builder.Services.AddSingleton<ICommunicationService, CommunicationService>();
 			builder.Services.AddSingleton<IDeviceDiscoverService, DeviceDiscoverService>();
+			builder.Services.AddSingleton<INavigationService, NavigationService>();
+
+			Routing.RegisterRoute(nameof(ControllerPage), typeof(ControllerPage));
 		}
 	}
 }

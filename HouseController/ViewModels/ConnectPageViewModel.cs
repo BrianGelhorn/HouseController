@@ -1,8 +1,4 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
-using HouseController.Models;
-using HouseController.Services;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -12,41 +8,68 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
+using CommunityToolkit.Maui.Core;
+using CommunityToolkit.Maui.Views;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using HouseController.Models;
+using HouseController.Services;
+using HouseController.Views;
+using HouseController.Views.PopUps;
 
 namespace HouseController.ViewModels
 {
-	public partial class ConnectPageViewModel : ObservableObject
-	{
-		[ObservableProperty]
-		ObservableCollection<DeviceInformation>? deviceInformationList;
+    public partial class ConnectPageViewModel : ObservableObject
+    {
+        [ObservableProperty]
+        ObservableCollection<DeviceInformation>? deviceInformationList;
 
-		IDeviceDiscoverService deviceDiscoverService;
-		ICommunicationService communicationService;
+        IDeviceDiscoverService deviceDiscoverService;
+        ICommunicationService communicationService;
+        INavigationService navigationService;
 
-		public ConnectPageViewModel(IDeviceDiscoverService deviceDiscoverService, ICommunicationService communicationService)
-		{
-			this.deviceDiscoverService = deviceDiscoverService;
-			this.communicationService = communicationService;
-		}
+        public ConnectPageViewModel(
+            IDeviceDiscoverService deviceDiscoverService,
+            ICommunicationService communicationService,
+            INavigationService navigationService
+        )
+        {
+            this.deviceDiscoverService = deviceDiscoverService;
+            this.communicationService = communicationService;
+            this.navigationService = navigationService;
+        }
 
-		[RelayCommand]
-		private async Task ConnectToDevice(string ip)
-		{
-			Debug.WriteLine("Conectando");
-			var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-			var ipEndPoint = new IPEndPoint(IPAddress.Parse(ip), 5000);
-			try
-			{
-				await socket.ConnectAsync(ipEndPoint);
-			}
-			catch
-			{
+        [RelayCommand]
+        private async Task ConnectToDevice(string ip)
+        {
+            Debug.WriteLine(ip);
+            var socket = new Socket(
+                AddressFamily.InterNetwork,
+                SocketType.Stream,
+                ProtocolType.Tcp
+            );
+            var ipEndPoint = new IPEndPoint(IPAddress.Parse(ip), 2500);
+            var connectingPopup = new ConnectingPopup(new ConnectingPopupViewModel());
 
-			}
-			finally
-			{
-				Debug.WriteLine(socket.Connected);
-			}
-		}
-	}
+            try
+            {
+                Application.Current?.MainPage?.ShowPopup(connectingPopup);
+                await socket.ConnectAsync(ipEndPoint);
+                connectingPopup.Close();
+                if (socket.Connected)
+                {
+                    await navigationService.GoToAsync(nameof(ControllerPage));
+                }
+            }
+            catch
+            {
+                var errorPopup = new ErrorConnectingPopup(ip);
+                Application.Current?.MainPage?.ShowPopup(errorPopup);
+            }
+            finally
+            {
+                connectingPopup.Close();
+            }
+        }
+    }
 }
