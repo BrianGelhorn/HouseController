@@ -3,11 +3,13 @@
 	x:Class="HouseController.Views.ControllerPage"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:views="clr-namespace:HouseController.Views"
 	Title="ControllerPage">
 	<VerticalStackLayout>
-		<Label
-			HorizontalOptions="Center"
-			Text="Welcome to .NET MAUI!"
-			VerticalOptions="Center" />
+		<FlexLayout Wrap="Wrap">
+			<views:CardView HeightRequest="250" WidthRequest="200" />
+			<views:CardView HeightRequest="250" WidthRequest="200" />
+			<views:CardView HeightRequest="250" WidthRequest="200" />
+		</FlexLayout>
 	</VerticalStackLayout>
 </ContentPage>

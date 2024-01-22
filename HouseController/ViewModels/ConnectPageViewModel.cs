@@ -1,14 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
+﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
-using CommunityToolkit.Maui.Core;
 using CommunityToolkit.Maui.Views;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -55,7 +48,6 @@ namespace HouseController.ViewModels
             {
                 Application.Current?.MainPage?.ShowPopup(connectingPopup);
                 await socket.ConnectAsync(ipEndPoint);
-                connectingPopup.Close();
                 if (socket.Connected)
                 {
                     await navigationService.GoToAsync(nameof(ControllerPage));

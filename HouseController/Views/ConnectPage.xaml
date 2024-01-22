@@ -4,10 +4,12 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:Fakes="clr-namespace:HouseController.Fakes"
-	xmlns:views="clr-namespace:HouseController.Views"
+	xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+	x:Name="ContentPage"
 	Title="Startup">
 	<ContentPage.Resources>
 		<ResourceDictionary>
+			<toolkit:ItemTappedEventArgsConverter x:Key="ItemTappedEventArgsConverter" />
 			<DataTemplate x:Key="AutomaticSearchDT">
 				<Border StrokeThickness="1">
 					<Label
@@ -19,23 +21,24 @@
 		</ResourceDictionary>
 	</ContentPage.Resources>
 	<VerticalStackLayout>
-		<FlexLayout Wrap="Wrap">
-			<views:CardView HeightRequest="250" WidthRequest="200" />
-			<views:CardView HeightRequest="250" WidthRequest="200" />
-			<views:CardView HeightRequest="250" WidthRequest="200" />
-		</FlexLayout>
 		<Label
 			FontSize="Title"
 			HorizontalTextAlignment="Center"
 			Text="Busqueda Automatica" />
 		<Border StrokeThickness="1">
-			<CollectionView
+			<ListView
 				BindingContext="{Fakes:FakeLists}"
 				ItemTemplate="{StaticResource AutomaticSearchDT}"
 				ItemsSource="{Binding IpList}"
-				SelectionChangedCommand="{Binding BindingContext.ConnectToDeviceCommand, Source={RelativeSource AncestorType={x:Type ContentPage}}}"
-				SelectionChangedCommandParameter="{Binding SelectedItem, Source={RelativeSource Self}}"
-				SelectionMode="Single" />
+				SelectionMode="None">
+				<ListView.Behaviors>
+
+					<toolkit:EventToCommandBehavior
+						Command="{Binding BindingContext.ConnectToDeviceCommand, Source={x:Reference ContentPage}}"
+						EventArgsConverter="{StaticResource ItemTappedEventArgsConverter}"
+						EventName="ItemTapped" />
+				</ListView.Behaviors>
+			</ListView>
 		</Border>
 		<Label
 			FontSize="Title"

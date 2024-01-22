@@ -3,15 +3,17 @@
 	x:Class="HouseController.Views.CardView"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-	xmlns:Fake="clr-namespace:HouseController.Fakes">
+	xmlns:Fake="clr-namespace:HouseController.Fakes"
+	xmlns:converter="clr-namespace:HouseController.Converters">
 	<ContentView.Resources>
 		<ResourceDictionary>
+			<converter:BoolToColorConverter x:Key="boolToColor" />
 			<DataTemplate x:Key="TimeDt">
 				<HorizontalStackLayout Margin="8,0" HeightRequest="20">
 					<BoxView
 						HeightRequest="12"
 						WidthRequest="12"
-						Color="Green" />
+						Color="{Binding Status, Converter={StaticResource boolToColor}}" />
 					<Label
 						FontSize="14"
 						Text="{Binding Time}"
