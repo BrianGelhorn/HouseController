@@ -3,13 +3,19 @@
 	x:Class="HouseController.Views.ControllerPage"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:fake="clr-namespace:HouseController.Fakes"
 	xmlns:views="clr-namespace:HouseController.Views"
 	Title="ControllerPage">
 	<VerticalStackLayout>
-		<FlexLayout Wrap="Wrap">
-			<views:CardView HeightRequest="250" WidthRequest="200" />
-			<views:CardView HeightRequest="250" WidthRequest="200" />
-			<views:CardView HeightRequest="250" WidthRequest="200" />
-		</FlexLayout>
+		<CollectionView EmptyView="{views:LoadingView}" ItemsSource="{Binding DeviceList}">
+			<CollectionView.ItemTemplate>
+				<DataTemplate>
+					<views:CardView />
+				</DataTemplate>
+			</CollectionView.ItemTemplate>
+			<!--<CollectionView.ItemsLayout>
+				<GridItemsLayout Orientation="Vertical" Span="2" />
+			</CollectionView.ItemsLayout>-->
+		</CollectionView>
 	</VerticalStackLayout>
 </ContentPage>

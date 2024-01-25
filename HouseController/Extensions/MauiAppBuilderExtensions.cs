@@ -1,9 +1,7 @@
-﻿using CommunityToolkit.Maui;
-using CommunityToolkit.Maui.Core;
-using HouseController.Services;
+﻿using HouseController.Services;
+using HouseController.Shared;
 using HouseController.ViewModels;
 using HouseController.Views;
-using HouseController.Views.PopUps;
 
 namespace HouseController.Extensions
 {
@@ -12,11 +10,14 @@ namespace HouseController.Extensions
 		public static void ConfigureHouseController(this MauiAppBuilder builder)
 		{
 			builder.Services.AddTransient<ConnectPage>();
+			builder.Services.AddTransient<ControllerPage>();
 			builder.Services.AddTransient<ConnectPageViewModel>();
+			builder.Services.AddTransient<ControllerPageViewModel>();
 			builder.Services.AddSingleton<ICommunicationService, CommunicationService>();
 			builder.Services.AddSingleton<IDeviceDiscoverService, DeviceDiscoverService>();
 			builder.Services.AddSingleton<INavigationService, NavigationService>();
-
+			builder.Services.AddSingleton<IPopupService, PopupService>();
+			builder.Services.AddSingleton<IConnectedDeviceInfo, ConnectedDeviceInfo>();
 			Routing.RegisterRoute(nameof(ControllerPage), typeof(ControllerPage));
 		}
 	}

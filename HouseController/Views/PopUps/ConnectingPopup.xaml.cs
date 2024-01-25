@@ -5,9 +5,11 @@ namespace HouseController.Views.PopUps;
 
 public partial class ConnectingPopup : Popup
 {
-	public ConnectingPopup(ConnectingPopupViewModel viewModel)
+	public string Ip { get; set; }
+	public ConnectingPopup(string Ip)
 	{
 		InitializeComponent();
-		BindingContext = viewModel;
+		BindingContext = this;
+		this.Ip = Ip;
 	}
 }

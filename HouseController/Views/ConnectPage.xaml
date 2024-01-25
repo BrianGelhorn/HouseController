@@ -3,20 +3,24 @@
 	x:Class="HouseController.Views.ConnectPage"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-	xmlns:Fakes="clr-namespace:HouseController.Fakes"
+	xmlns:fakes="clr-namespace:HouseController.Fakes"
 	xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 	x:Name="ContentPage"
 	Title="Startup">
 	<ContentPage.Resources>
 		<ResourceDictionary>
 			<toolkit:ItemTappedEventArgsConverter x:Key="ItemTappedEventArgsConverter" />
-			<DataTemplate x:Key="AutomaticSearchDT">
-				<Border StrokeThickness="1">
-					<Label
-						Padding="16"
-						HorizontalTextAlignment="Center"
-						Text="{Binding}" />
-				</Border>
+			<DataTemplate x:Key="AutomaticSearchDt">
+				<ViewCell>
+					<Border StrokeThickness="1">
+						<Label
+							Padding="16"
+							FontSize="14"
+							HorizontalTextAlignment="Center"
+							Text="{Binding}"
+							TextColor="White" />
+					</Border>
+				</ViewCell>
 			</DataTemplate>
 		</ResourceDictionary>
 	</ContentPage.Resources>
@@ -27,10 +31,12 @@
 			Text="Busqueda Automatica" />
 		<Border StrokeThickness="1">
 			<ListView
-				BindingContext="{Fakes:FakeLists}"
-				ItemTemplate="{StaticResource AutomaticSearchDT}"
+				ItemTemplate="{StaticResource AutomaticSearchDt}"
 				ItemsSource="{Binding IpList}"
 				SelectionMode="None">
+				<ListView.BindingContext>
+					<fakes:FakeLists />
+				</ListView.BindingContext>
 				<ListView.Behaviors>
 
 					<toolkit:EventToCommandBehavior

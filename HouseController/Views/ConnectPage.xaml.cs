@@ -1,6 +1,4 @@
 ﻿using HouseController.ViewModels;
-using System.Net;
-using System.Net.Sockets;
 
 namespace HouseController.Views
 {

@@ -4,16 +4,19 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:Fake="clr-namespace:HouseController.Fakes"
-	xmlns:converter="clr-namespace:HouseController.Converters">
+	xmlns:converter="clr-namespace:HouseController.Converters"
+	HeightRequest="250"
+	WidthRequest="200">
 	<ContentView.Resources>
 		<ResourceDictionary>
 			<converter:BoolToColorConverter x:Key="boolToColor" />
+			<converter:BoolToStatusText x:Key="BoolToStatusText" />
 			<DataTemplate x:Key="TimeDt">
 				<HorizontalStackLayout Margin="8,0" HeightRequest="20">
 					<BoxView
 						HeightRequest="12"
 						WidthRequest="12"
-						Color="{Binding Status, Converter={StaticResource boolToColor}}" />
+						Color="{Binding TimeStatus, Converter={StaticResource boolToColor}}" />
 					<Label
 						FontSize="14"
 						Text="{Binding Time}"
@@ -29,7 +32,7 @@
 		StrokeThickness="1">
 		<Grid RowDefinitions="Auto, 1.5*, 2*">
 			<HorizontalStackLayout Grid.Row="0" HorizontalOptions="Center">
-				<Label FontSize="18" Text="Device Name" />
+				<Label FontSize="18" Text="{Binding Name}" />
 			</HorizontalStackLayout>
 			<Grid
 				Grid.Row="1"
@@ -39,21 +42,23 @@
 				<Button
 					Grid.Column="0"
 					Margin="2,0,1,0"
-					Text="On/Off" />
+					BackgroundColor="{Binding Status, Converter={StaticResource boolToColor}}"
+					FontSize="16"
+					Text="{Binding Status, Converter={StaticResource BoolToStatusText}}" />
 				<Button
 					Grid.Column="1"
 					Margin="1,0,2,0"
+					FontSize="16"
 					Text="Set Times" />
 			</Grid>
 
 			<CollectionView
 				Grid.Row="2"
 				Margin="0,10,0,0"
-				BindingContext="{Fake:FakeLists}"
 				FlowDirection="LeftToRight"
 				ItemSizingStrategy="MeasureAllItems"
 				ItemTemplate="{StaticResource TimeDt}"
-				ItemsSource="{Binding TimesList}">
+				ItemsSource="{Binding TimeInfoList}">
 				<CollectionView.ItemsLayout>
 					<GridItemsLayout
 						Orientation="Vertical"
