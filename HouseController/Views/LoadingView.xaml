@@ -5,10 +5,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit">
 	<StackLayout>
-		<ActivityIndicator
-			BackgroundColor="Transparent"
-			IsRunning="{Binding IsLoading}"
-			Color="White" />
+		<ActivityIndicator BackgroundColor="Transparent" IsRunning="{Binding IsLoading}" />
 		<Label
 			HorizontalTextAlignment="Center"
 			IsVisible="{Binding IsEmptyList}"

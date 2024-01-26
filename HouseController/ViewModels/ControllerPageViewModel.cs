@@ -1,18 +1,19 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Collections.ObjectModel;
+using CommunityToolkit.Mvvm.ComponentModel;
 using HouseController.Models;
 using HouseController.Services;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Net.Sockets;
+using CommunityToolkit.Maui.Core.Extensions;
+using CommunityToolkit.Mvvm.Input;
 using HouseController.Shared;
 
 namespace HouseController.ViewModels
 {
 	public partial class ControllerPageViewModel : ObservableObject
 	{
-		private ObservableCollection<DeviceData>? _deviceList;
+		private ObservableCollection<DeviceViewModel>? _deviceList;
 
-		public ObservableCollection<DeviceData>? DeviceList
+		public ObservableCollection<DeviceViewModel>? DeviceList
 		{
 			get => _deviceList;
 			set
@@ -24,8 +25,6 @@ namespace HouseController.ViewModels
 
 		private readonly ICommunicationService _communicationService;
 
-		private readonly Socket? _socket;
-
 		public ControllerPageViewModel(ICommunicationService communicationService,
 			IConnectedDeviceInfo connectedDeviceInfo)
 		{
@@ -35,7 +34,6 @@ namespace HouseController.ViewModels
 				return;
 			}
 
-			_socket = connectedDeviceInfo.DeviceInformation.EspSocket;
 			GetDeviceList();
 		}
 
@@ -43,8 +41,14 @@ namespace HouseController.ViewModels
 		{
 			Task.Run(async () =>
 			{
-				var deviceList = await _communicationService.GetInitialData(_socket, 4096);
-				DeviceList = deviceList;
+				var deviceInfoList = await _communicationService.GetInitialData(4096);
+				var deviceViewModelList = new ObservableCollection<DeviceViewModel>();
+				foreach (var device in deviceInfoList)
+				{
+					var deviceViewModel = new DeviceViewModel(_communicationService, device);
+					deviceViewModelList.Add(deviceViewModel);
+				}
+				DeviceList = deviceViewModelList;
 			});
 		}
 	}

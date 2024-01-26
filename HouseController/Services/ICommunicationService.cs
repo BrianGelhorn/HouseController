@@ -1,13 +1,16 @@
-﻿using HouseController.Models;
-using System.Collections.ObjectModel;
-using System.Net;
+﻿using System.Collections.ObjectModel;
 using System.Net.Sockets;
+using HouseController.ViewModels;
+using DeviceInfo = HouseController.Models.DeviceInfo;
 
 namespace HouseController.Services
 {
 	public interface ICommunicationService
 	{
-		public Task<bool> SendDeviceChange(Socket espSocket, DeviceInformation device);
-		public Task<ObservableCollection<DeviceData>> GetInitialData(Socket espSocket, int recvBuffer);
+		public NetworkStream EspNetworkStream { get; set; } 
+		public Task<bool> SendDeviceChange(DeviceInfo deviceInfo);
+		public Task<ObservableCollection<DeviceInfo>> GetInitialData(int recvBuffer);
+		public void SetCurrentSocket(NetworkStream espNetworkStream);
+		public DeviceInfo CreateDeviceInfo(DeviceViewModel deviceViewModel);
 	}
 }

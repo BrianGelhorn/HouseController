@@ -1,23 +1,19 @@
 ﻿using HouseController.Models;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
+using HouseController.ViewModels;
 
 namespace HouseController.Shared
 {
 	public class ConnectedDeviceInfo : IConnectedDeviceInfo
 	{
-		public DeviceInformation? DeviceInformation { get; set; }
-		public ObservableCollection<DeviceData>? DeviceDataList { get; set; }
+		public ServerInformation? DeviceInformation { get; set; }
+		public ObservableCollection<DeviceViewModel>? DeviceDataList { get; set; }
 
-		public void CreateDeviceInformation(IPEndPoint DeviceIp, string DeviceName, Socket EspSocket)
+		public void CreateDeviceInformation(IPEndPoint DeviceIp, string DeviceName, NetworkStream espNetworkStream)
 		{
-			DeviceInformation = new DeviceInformation(DeviceIp, DeviceName, EspSocket);
+			DeviceInformation = new ServerInformation(DeviceIp, DeviceName, espNetworkStream);
 		}
 	}
 }

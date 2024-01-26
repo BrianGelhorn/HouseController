@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using CommunityToolkit.Mvvm.ComponentModel;
 using HouseController.Models;
 using HouseController.ViewModels;
 
@@ -11,4 +12,5 @@ public partial class CardView : ContentView
 	{
 		InitializeComponent();
 	}
+
 }

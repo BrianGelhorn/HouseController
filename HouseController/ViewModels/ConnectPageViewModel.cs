@@ -20,26 +20,24 @@ namespace HouseController.ViewModels
 		IConnectedDeviceInfo connectedDeviceInfo
 	) : ObservableObject
 	{
-		[ObservableProperty] ObservableCollection<DeviceInformation>? deviceInformationList;
+		[ObservableProperty] ObservableCollection<ServerInformation>? deviceInformationList;
 
 		[RelayCommand]
 		private async Task ConnectToDevice(string ip)
 		{
 			Debug.WriteLine(ip);
-			var socket = new Socket(
-				AddressFamily.InterNetwork,
-				SocketType.Stream,
-				ProtocolType.Tcp
-			);
+			var tcpClient = new TcpClient();
 			var ipEndPoint = new IPEndPoint(IPAddress.Parse(ip), 2500);
 			var connectingPopup = new ConnectingPopup(ip);
 			try
 			{
+				await tcpClient.ConnectAsync(ipEndPoint);
+				var networkStream = tcpClient.GetStream();
 				popupService.ShowPopup(connectingPopup);
-				await socket.ConnectAsync(ipEndPoint);
-				if (socket.Connected)
+				if (tcpClient.Connected)
 				{
-					connectedDeviceInfo.CreateDeviceInformation(ipEndPoint, ip, socket);
+					connectedDeviceInfo.CreateDeviceInformation(ipEndPoint, ip, networkStream);
+					communicationService.SetCurrentSocket(networkStream);
 					await navigationService.GoToAsync(nameof(ControllerPage));
 				}
 

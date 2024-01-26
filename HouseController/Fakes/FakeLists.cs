@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using HouseController.Models;
-
 namespace HouseController.Fakes
 {
 	class FakeLists
@@ -37,7 +36,7 @@ namespace HouseController.Fakes
 			new TimeInfo() { Time = "14:50", TimeStatus = true }
 		];
 
-		public ObservableCollection<DeviceData> DeviceDataList { get; } =
-			[new DeviceData { Name = "ASDASD", Status = false, TimeInfoList = TimesList }];
+		//public ObservableCollection<DeviceInfo> DeviceDataList { get; } =
+		//	[new DeviceInfo { Name = "ASDASD", Status = false, TimeInfoList = TimesList.ToList(), Id = 0}];
 	}
 }

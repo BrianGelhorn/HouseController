@@ -14,7 +14,7 @@ public partial class LoadingView : ContentView
 		BindingContext = this;
 		Task.Run(() =>
 		{
-			Task.Delay(8000).Wait();
+			Task.Delay(20000).Wait();
 			RaiseIsLoadingChanged();
 		});
 	}

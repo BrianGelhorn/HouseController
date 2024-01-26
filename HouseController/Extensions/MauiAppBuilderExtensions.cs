@@ -13,6 +13,8 @@ namespace HouseController.Extensions
 			builder.Services.AddTransient<ControllerPage>();
 			builder.Services.AddTransient<ConnectPageViewModel>();
 			builder.Services.AddTransient<ControllerPageViewModel>();
+			builder.Services.AddTransient<DeviceViewModel>();
+			builder.Services.AddTransient<CardView>();
 			builder.Services.AddSingleton<ICommunicationService, CommunicationService>();
 			builder.Services.AddSingleton<IDeviceDiscoverService, DeviceDiscoverService>();
 			builder.Services.AddSingleton<INavigationService, NavigationService>();
