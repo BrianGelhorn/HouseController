@@ -25,23 +25,23 @@ namespace HouseController.ViewModels
 
 		private readonly ICommunicationService _communicationService;
 
-		public ControllerPageViewModel(ICommunicationService communicationService,
-			IConnectedDeviceInfo connectedDeviceInfo)
+		public ControllerPageViewModel(ICommunicationService communicationService)
 		{
 			_communicationService = communicationService;
-			if (connectedDeviceInfo.DeviceInformation == null)
+			if (ConnectedDeviceInfo.CurrentEspData == null)
 			{
 				return;
 			}
-
 			GetDeviceList();
 		}
 
 		public void GetDeviceList()
 		{
+			var listeningCancellationSource = new CancellationTokenSource();
+			var listeningCancellationToken = listeningCancellationSource.Token;
 			Task.Run(async () =>
 			{
-				var deviceInfoList = await _communicationService.GetInitialData(4096);
+				var deviceInfoList = await _communicationService.GetInitialDataAsync(4096, listeningCancellationToken);
 				var deviceViewModelList = new ObservableCollection<DeviceViewModel>();
 				foreach (var device in deviceInfoList)
 				{
@@ -49,6 +49,8 @@ namespace HouseController.ViewModels
 					deviceViewModelList.Add(deviceViewModel);
 				}
 				DeviceList = deviceViewModelList;
+				ConnectedDeviceInfo.DeviceDataList = DeviceList;
+				await _communicationService.StartListeningForUpdateAsync(4096, listeningCancellationToken);
 			});
 		}
 	}

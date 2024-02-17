@@ -4,13 +4,13 @@ using System.Net.Sockets;
 
 namespace HouseController.Models
 {
-	public record ServerInformation(IPEndPoint DeviceIp, string DeviceName, NetworkStream EspNetworkStream);
+	public record EspData(string DeviceIp, string DeviceName, NetworkStream EspNetworkStream);
 
-	public record DeviceInfo(int Id, string Name, bool Status, List<TimeInfo> TimeInfoList);
+	public record DeviceInfo(int Id, string Name, int Status, List<TimeInfo> TimeInfoList);
 	public class TimeInfo
 	{
 		public string? Time { get; set; }
 
-		public bool TimeStatus { get; set; }
+		public int TimeStatus { get; set; }
 	}
 }

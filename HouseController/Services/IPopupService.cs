@@ -9,7 +9,7 @@ namespace HouseController.Services
 {
 	public interface IPopupService
 	{
-		public void ShowPopup(Popup popup);
+		public void ShowPopup(Popup popup, bool canBeDismissedByTappingOutsideOfPopup);
 		public void ClosePopup(Popup popup);
 	}
 }

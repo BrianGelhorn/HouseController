@@ -20,20 +20,20 @@ namespace HouseController.Fakes
 
 		public static ObservableCollection<TimeInfo> TimesList { get; } =
 		[
-			new TimeInfo() { Time = "21:19", TimeStatus = true },
-			new TimeInfo() { Time = "21:19", TimeStatus = true },
-			new TimeInfo() { Time = "21:19", TimeStatus = true },
-			new TimeInfo() { Time = "21:19", TimeStatus = true },
-			new TimeInfo() { Time = "21:19", TimeStatus = true },
-			new TimeInfo() { Time = "21:19", TimeStatus = true },
-			new TimeInfo() { Time = "21:19", TimeStatus = true },
-			new TimeInfo() { Time = "12:31", TimeStatus = true },
-			new TimeInfo() { Time = "12:31", TimeStatus = true },
-			new TimeInfo() { Time = "12:31", TimeStatus = true },
-			new TimeInfo() { Time = "12:31", TimeStatus = true },
-			new TimeInfo() { Time = "12:31", TimeStatus = false },
-			new TimeInfo() { Time = "12:31", TimeStatus = false },
-			new TimeInfo() { Time = "14:50", TimeStatus = true }
+			new TimeInfo() { Time = "21:19", TimeStatus = 1 },
+			new TimeInfo() { Time = "21:19", TimeStatus = 1 },
+			new TimeInfo() { Time = "21:19", TimeStatus = 1 },
+			new TimeInfo() { Time = "21:19", TimeStatus = 1 },
+			new TimeInfo() { Time = "21:19", TimeStatus = 1 },
+			new TimeInfo() { Time = "21:19", TimeStatus = 1 },
+			new TimeInfo() { Time = "21:19", TimeStatus = 1 },
+			new TimeInfo() { Time = "12:31", TimeStatus = 1 },
+			new TimeInfo() { Time = "12:31", TimeStatus = 1 },
+			new TimeInfo() { Time = "12:31", TimeStatus = 1 },
+			new TimeInfo() { Time = "12:31", TimeStatus = 1 },
+			new TimeInfo() { Time = "12:31", TimeStatus = 0 },
+			new TimeInfo() { Time = "12:31", TimeStatus = 0 },
+			new TimeInfo() { Time = "14:50", TimeStatus = 1 }
 		];
 
 		//public ObservableCollection<DeviceInfo> DeviceDataList { get; } =

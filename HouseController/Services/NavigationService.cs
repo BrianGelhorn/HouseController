@@ -10,12 +10,18 @@ namespace HouseController.Services
 	{
 		public Task GoToAsync(string uri)
 		{
-			return Shell.Current.GoToAsync(uri);
+			return MainThread.InvokeOnMainThreadAsync(async() =>
+			{
+				await Shell.Current.GoToAsync(uri);
+			});
 		}
 
 		public Task GoToAsync(string uri, IDictionary<string, object> parameters)
 		{
-			return Shell.Current.GoToAsync(uri, parameters);
+			return MainThread.InvokeOnMainThreadAsync(async() =>
+			{
+				await Shell.Current.GoToAsync(uri, parameters);
+			});
 		}
 	}
 }

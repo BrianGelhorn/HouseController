@@ -6,14 +6,14 @@ using HouseController.ViewModels;
 
 namespace HouseController.Shared
 {
-	public class ConnectedDeviceInfo : IConnectedDeviceInfo
+	public static class ConnectedDeviceInfo
 	{
-		public ServerInformation? DeviceInformation { get; set; }
-		public ObservableCollection<DeviceViewModel>? DeviceDataList { get; set; }
+		public static EspData? CurrentEspData { get; set; }
+		public static ObservableCollection<DeviceViewModel>? DeviceDataList { get; set; }
 
-		public void CreateDeviceInformation(IPEndPoint DeviceIp, string DeviceName, NetworkStream espNetworkStream)
+		public static void SetCurrentEspData(string deviceIp, string deviceName, NetworkStream espNetworkStream)
 		{
-			DeviceInformation = new ServerInformation(DeviceIp, DeviceName, espNetworkStream);
+			CurrentEspData = new EspData(deviceIp, deviceName, espNetworkStream);
 		}
 	}
 }

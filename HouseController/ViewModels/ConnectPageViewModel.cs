@@ -16,39 +16,46 @@ namespace HouseController.ViewModels
 		IDeviceDiscoverService deviceDiscoverService,
 		ICommunicationService communicationService,
 		INavigationService navigationService,
-		IPopupService popupService,
-		IConnectedDeviceInfo connectedDeviceInfo
+		IPopupService popupService
 	) : ObservableObject
+
 	{
-		[ObservableProperty] ObservableCollection<ServerInformation>? deviceInformationList;
-
 		[RelayCommand]
-		private async Task ConnectToDevice(string ip)
+		private void ConnectToDevice(string ip)
 		{
-			Debug.WriteLine(ip);
-			var tcpClient = new TcpClient();
-			var ipEndPoint = new IPEndPoint(IPAddress.Parse(ip), 2500);
+			var connectCancellationTokenSource = new CancellationTokenSource();
+			CancellationToken connectCancellationToken = connectCancellationTokenSource.Token;
 			var connectingPopup = new ConnectingPopup(ip);
-			try
-			{
-				await tcpClient.ConnectAsync(ipEndPoint);
-				var networkStream = tcpClient.GetStream();
-				popupService.ShowPopup(connectingPopup);
-				if (tcpClient.Connected)
-				{
-					connectedDeviceInfo.CreateDeviceInformation(ipEndPoint, ip, networkStream);
-					communicationService.SetCurrentSocket(networkStream);
-					await navigationService.GoToAsync(nameof(ControllerPage));
-				}
+			var errorConnectingPopup = new ErrorConnectingPopup(ip);
 
-				popupService.ClosePopup(connectingPopup);
-			}
-			catch (Exception e)
-			{
-				popupService.ClosePopup(connectingPopup);
-				var errorPopup = new ErrorConnectingPopup(ip);
-				popupService.ShowPopup(errorPopup);
-			}
+			//connectingPopup.Closed += ((sender, args) =>
+			//{
+			//	connectCancellationTokenSource.Cancel();
+			//});
+			popupService.ShowPopup(connectingPopup, true);
+			var isConnected = false;
+			Task.Run(async () =>
+				{
+					try
+					{
+						isConnected = await communicationService.ConnectToDeviceAsync(ip, 2500, connectCancellationToken);
+						if (isConnected)
+						{
+							await navigationService.GoToAsync(nameof(ControllerPage));
+						}
+						else
+						{
+							throw new Exception("Connecting Failed");
+						}
+					}
+					catch(Exception e)
+					{
+						//Debug.WriteLine(e.Message);
+						//popupService.ClosePopup(connectingPopup);
+						//popupService.ShowPopup(errorConnectingPopup, true);
+					}
+				},
+				connectCancellationToken);
 		}
 	}
 }

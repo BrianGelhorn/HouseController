@@ -7,18 +7,18 @@ using System.Threading.Tasks;
 
 namespace HouseController.Converters
 {
-	class BoolToStatusText : IValueConverter
+	class IntToStatusText : IValueConverter
 	{
 		private const string On = "ON";
 		private const string Off = "OFF";
 		public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
 		{
-			return value != null && (bool)value ? On : Off;
+			return value != null && (int)value == 1 ? On : Off;
 		}
 
 		public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
 		{
-			return value != null && (string)value == On;
+			return (value != null && (string)value == On) ? 1 : 0;
 		}
 	}
 }

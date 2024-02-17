@@ -19,7 +19,6 @@ namespace HouseController.Extensions
 			builder.Services.AddSingleton<IDeviceDiscoverService, DeviceDiscoverService>();
 			builder.Services.AddSingleton<INavigationService, NavigationService>();
 			builder.Services.AddSingleton<IPopupService, PopupService>();
-			builder.Services.AddSingleton<IConnectedDeviceInfo, ConnectedDeviceInfo>();
 			Routing.RegisterRoute(nameof(ControllerPage), typeof(ControllerPage));
 		}
 	}

@@ -15,8 +15,9 @@ namespace HouseController.Services
 			popup.Close();
 		}
 
-		public void ShowPopup(Popup popup)
+		public void ShowPopup(Popup popup, bool canBeDismissedByTappingOutsideOfPopup)
 		{
+			popup.CanBeDismissedByTappingOutsideOfPopup = canBeDismissedByTappingOutsideOfPopup;
 			Application.Current?.MainPage?.ShowPopup(popup);
 		}
 	}
