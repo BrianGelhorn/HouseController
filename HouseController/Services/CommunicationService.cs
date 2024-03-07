@@ -145,10 +145,10 @@ namespace HouseController.Services
 						{
 							if (device.Id != updatedId)
 								continue;
-							await Application.Current!.Dispatcher.DispatchAsync(() =>
+							MainThread.BeginInvokeOnMainThread(() =>
 							{
-								device.UpdateDeviceView(updatedDataValue, updatedDataType);
-							});
+                                device.UpdateDeviceView(updatedDataValue, updatedDataType);
+                            });	
 						}
 					}
 				}

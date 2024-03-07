@@ -55,7 +55,7 @@ namespace HouseController.ViewModels
 						//popupService.ShowPopup(errorConnectingPopup, true);
 					}
 				},
-				connectCancellationToken);
+				connectCancellationToken)/*.ContinueWith(x=>{ popupService.ClosePopup(connectingPopup);})*/;
 		}
 	}
 }

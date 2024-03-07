@@ -3,14 +3,85 @@
 	x:Class="HouseController.Views.ControllerPage"
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:converter="clr-namespace:HouseController.Converters"
 	xmlns:fake="clr-namespace:HouseController.Fakes"
 	xmlns:views="clr-namespace:HouseController.Views"
 	xmlns:vm="clr-namespace:HouseController.ViewModels"
 	Title="ControllerPage">
+	<ContentPage.Resources>
+		<ResourceDictionary>
+			<converter:IntToColorConverter x:Key="IntToColorConverter" />
+			<converter:IntToStatusText x:Key="IntToStatusText" />
+			<DataTemplate x:Key="TimesProgramed">
+				<HorizontalStackLayout Margin="8,0" HeightRequest="20">
+					<BoxView
+						HeightRequest="12"
+						WidthRequest="12"
+						Color="{Binding TimeStatus, Converter={StaticResource IntToColorConverter}}" />
+					<Label
+						FontSize="14"
+						Text="{Binding Time}"
+						VerticalTextAlignment="Center" />
+					<HorizontalStackLayout.GestureRecognizers>
+						<TapGestureRecognizer Command="{Binding OnTimeTappedCommand}" CommandParameter="{Binding .}" />
+					</HorizontalStackLayout.GestureRecognizers>
+				</HorizontalStackLayout>
+			</DataTemplate>
+		</ResourceDictionary>
+	</ContentPage.Resources>
 	<CollectionView x:Name="DevicesCollectionView" ItemsSource="{Binding DeviceList}">
 		<CollectionView.ItemTemplate>
 			<DataTemplate>
-				<views:CardView BindingContext="{Binding .}" />
+				<Border
+					x:Name="DeviceBorder"
+					Margin="4"
+					BackgroundColor="Gray"
+					BindingContext="{Binding .}"
+					HeightRequest="250"
+					StrokeShape="RoundRectangle 10"
+					StrokeThickness="1"
+					WidthRequest="200">
+					<Grid RowDefinitions="Auto, 1.5*, 2*">
+						<HorizontalStackLayout Grid.Row="0" HorizontalOptions="Center">
+							<Label FontSize="18" Text="{Binding Name}" />
+						</HorizontalStackLayout>
+						<Grid
+							Grid.Row="1"
+							Margin="0,8,0,4"
+							ColumnDefinitions="*, *"
+							HorizontalOptions="FillAndExpand">
+							<Button
+								x:Name="StatusButton"
+								Grid.Column="0"
+								Margin="2,0,1,0"
+								BackgroundColor="{Binding Status, Converter={StaticResource IntToColorConverter}}"
+								Command="{Binding StatusButtonClickedCommand}"
+								FontSize="16"
+								Text="{Binding Status, Converter={StaticResource IntToStatusText}}" />
+							<Button
+								x:Name="AddTimeButton"
+								Grid.Column="1"
+								Margin="1,0,2,0"
+								FontSize="16"
+								Text="Set Times" />
+						</Grid>
+
+						<CollectionView
+							Grid.Row="2"
+							Margin="0,10,0,0"
+							FlowDirection="LeftToRight"
+							ItemSizingStrategy="MeasureAllItems"
+							ItemTemplate="{StaticResource TimesProgramed}"
+							ItemsSource="{Binding TimeInfoList}">
+							<CollectionView.ItemsLayout>
+								<GridItemsLayout
+									Orientation="Vertical"
+									Span="3"
+									VerticalItemSpacing="10" />
+							</CollectionView.ItemsLayout>
+						</CollectionView>
+					</Grid>
+				</Border>
 			</DataTemplate>
 		</CollectionView.ItemTemplate>
 		<CollectionView.ItemsLayout>

@@ -1,9 +1,9 @@
 ﻿using CommunityToolkit.Maui.Core.Extensions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using HouseController.Models;
 using HouseController.Services;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using DeviceInfo = HouseController.Models.DeviceInfo;
 
 namespace HouseController.ViewModels
@@ -39,7 +39,13 @@ namespace HouseController.ViewModels
 		[NotifyCanExecuteChangedFor(nameof(StatusButtonClickedCommand))]
 		private bool canStatusButton = true;
 
-		[RelayCommand(CanExecute = nameof(CanStatusButtonClicked))]
+		[RelayCommand]
+		private void TimeTapped(object parameter)
+		{
+			Debug.WriteLine(parameter);
+		}
+
+        [RelayCommand(CanExecute = nameof(CanStatusButtonClicked))]
 		private async Task StatusButtonClicked()
 		{
 			RaiseCanStatusButtonChanged();
@@ -67,14 +73,27 @@ namespace HouseController.ViewModels
                 property.SetValue(this, int.Parse((string)value), null);
 			}
 			else
-			{ 
+			{
                 property.SetValue(this, value, null);
 			}
 			//Id = deviceInfo.Id;	
 			//Name = deviceInfo.Name;
 			//Status = deviceInfo.Status;
-			//TimeInfoList = deviceInfo.TimeInfoList.ToObservableCollection();
+			//TimeInfoList = deviceInfo.TimeInfoList.ToObservableCollection(
 			RaiseCanStatusButtonChanged();
 		}
 	}
+    public partial class TimeInfo : ObservableObject
+    {
+        public string? Time { get; set; }
+
+        public int TimeStatus { get; set; }
+
+        [RelayCommand]
+        public void OnTimeTapped(object parameter)
+        {
+
+        }
+
+    }
 }

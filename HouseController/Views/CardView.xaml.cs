@@ -8,9 +8,10 @@ namespace HouseController.Views;
 
 public partial class CardView : ContentView
 {
-	public CardView()
+	public CardView(DeviceViewModel viewModel)
 	{
 		InitializeComponent();
-	}
+		BindingContext = viewModel;
 
+	}
 }
