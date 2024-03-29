@@ -22,9 +22,6 @@
 						FontSize="14"
 						Text="{Binding Time}"
 						VerticalTextAlignment="Center" />
-					<HorizontalStackLayout.GestureRecognizers>
-						<TapGestureRecognizer Command="{Binding OnTimeTappedCommand}" CommandParameter="{Binding .}" />
-					</HorizontalStackLayout.GestureRecognizers>
 				</HorizontalStackLayout>
 			</DataTemplate>
 		</ResourceDictionary>
@@ -67,12 +64,16 @@
 						</Grid>
 
 						<CollectionView
+							x:Name="TimesCollectionView"
 							Grid.Row="2"
 							Margin="0,10,0,0"
 							FlowDirection="LeftToRight"
 							ItemSizingStrategy="MeasureAllItems"
 							ItemTemplate="{StaticResource TimesProgramed}"
-							ItemsSource="{Binding TimeInfoList}">
+							ItemsSource="{Binding TimeInfoList}"
+							SelectionMode="Single" 
+							SelectionChangedCommand="{Binding OpenChangeTimePopupCommand}" 
+							SelectionChangedCommandParameter="{Binding SelectedItem, Source={x:Reference Name=TimesCollectionView}}">
 							<CollectionView.ItemsLayout>
 								<GridItemsLayout
 									Orientation="Vertical"

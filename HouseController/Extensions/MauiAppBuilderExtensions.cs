@@ -16,9 +16,7 @@ namespace HouseController.Extensions
 			builder.Services.AddTransient<DeviceViewModel>();
 			builder.Services.AddTransient<CardView>();
 			builder.Services.AddSingleton<ICommunicationService, CommunicationService>();
-			builder.Services.AddSingleton<IDeviceDiscoverService, DeviceDiscoverService>();
 			builder.Services.AddSingleton<INavigationService, NavigationService>();
-			builder.Services.AddSingleton<IPopupService, PopupService>();
 			Routing.RegisterRoute(nameof(ControllerPage), typeof(ControllerPage));
 		}
 	}

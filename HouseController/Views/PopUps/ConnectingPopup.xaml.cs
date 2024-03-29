@@ -6,10 +6,10 @@ namespace HouseController.Views.PopUps;
 public partial class ConnectingPopup : Popup
 {
 	public string Ip { get; set; }
-	public ConnectingPopup(string Ip)
+	public ConnectingPopup(string ip)
 	{
 		InitializeComponent();
 		BindingContext = this;
-		this.Ip = Ip;
+		Ip = ip;
 	}
 }

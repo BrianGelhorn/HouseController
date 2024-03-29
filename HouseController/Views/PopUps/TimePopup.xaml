@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<toolkit:Popup xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+         xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+         x:Class="HouseController.Views.PopUps.TimePopup"
+         xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+         xmlns:converters="clr-namespace:HouseController.Converters"
+         Color="Transparent">
+	<toolkit:Popup.Resources>
+		<ResourceDictionary>
+			<converters:IntToColorConverter x:Key="IntToColorConverter" />
+			<converters:IntToStatusText x:Key="IntToStatusText" />
+		</ResourceDictionary>
+	</toolkit:Popup.Resources>
+	<Border StrokeShape="RoundRectangle 20" BackgroundColor="Black" Stroke="Black">
+	     <Grid WidthRequest="400" HeightRequest="100">
+		     <Grid.ColumnDefinitions>
+			     <ColumnDefinition Width="*"></ColumnDefinition>
+			     <ColumnDefinition Width="2*"></ColumnDefinition>
+		     </Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="*"></RowDefinition>
+				<RowDefinition Height="3*"></RowDefinition>
+			</Grid.RowDefinitions>
+			<Label Grid.Row="0" Grid.Column="0" HorizontalTextAlignment="Center" Text="Action"></Label>
+			<Label Grid.Row="0" Grid.Column="1" HorizontalTextAlignment="Center" Text="Time"></Label>
+		     <Button VerticalOptions="Center" Clicked="OnTimeStatusClicked" Width="128" HeightRequest="64" Grid.Row="1" Grid.Column="0" Text="{Binding ButtonStatus, Converter={x:StaticResource IntToStatusText}}" WidthRequest="100" BackgroundColor="{Binding ButtonStatus, Converter={x:StaticResource IntToColorConverter}}"></Button>
+		     <TimePicker Time="{Binding TimeStatus}" Format="hh:mm" Grid.Row="1" Grid.Column="1" MaximumHeightRequest="50"></TimePicker>
+	     </Grid>
+     </Border>
+</toolkit:Popup>

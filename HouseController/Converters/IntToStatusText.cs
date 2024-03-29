@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 
 namespace HouseController.Converters
 {
@@ -11,10 +6,19 @@ namespace HouseController.Converters
 	{
 		private const string On = "ON";
 		private const string Off = "OFF";
+        private const string Error = "ERROR";
 		public object? Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
 		{
-			return value != null && (int)value == 1 ? On : Off;
-		}
+            if (value == null || (int)value == -1)
+                return Error;
+            else
+                return (int)value switch
+                {
+                    0 => Off,
+                    1 => On,
+                    _ => Error
+                };
+        }
 
 		public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
 		{

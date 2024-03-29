@@ -90,6 +90,9 @@
 	  <Compile Update="Views\PopUps\ErrorConnectingPopup.xaml.cs">
 	    <DependentUpon>ErrorConnectingPopup.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Views\PopUps\TimePopup.xaml.cs">
+	    <DependentUpon>TimePopup.xaml</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -103,6 +106,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\PopUps\ErrorConnectingPopup.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\PopUps\TimePopup.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

@@ -34,9 +34,9 @@
 				ItemTemplate="{StaticResource AutomaticSearchDt}"
 				ItemsSource="{Binding IpList}"
 				SelectionMode="None">
-				<ListView.BindingContext>
+				<!--<ListView.BindingContext>
 					<fakes:FakeLists />
-				</ListView.BindingContext>
+				</ListView.BindingContext>-->
 				<ListView.Behaviors>
 
 					<toolkit:EventToCommandBehavior

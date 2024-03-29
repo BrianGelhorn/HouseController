@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using HouseController.Models;
 using HouseController.Services;
@@ -26,7 +27,7 @@ namespace HouseController.ViewModels
 		private readonly ICommunicationService _communicationService;
 
 		public ControllerPageViewModel(ICommunicationService communicationService)
-		{
+        {
 			_communicationService = communicationService;
 			if (ConnectedDeviceInfo.CurrentEspData == null)
 			{
@@ -34,11 +35,10 @@ namespace HouseController.ViewModels
 			}
 			GetDeviceList();
 		}
-
+        private readonly CancellationTokenSource _listeningCancellationSource = new();
 		public void GetDeviceList()
 		{
-			var listeningCancellationSource = new CancellationTokenSource();
-			var listeningCancellationToken = listeningCancellationSource.Token;
+			var listeningCancellationToken = _listeningCancellationSource.Token;
 			Task.Run(async () =>
 			{
 				var deviceInfoList = await _communicationService.GetInitialDataAsync(4096, listeningCancellationToken);
@@ -51,7 +51,13 @@ namespace HouseController.ViewModels
 				DeviceList = deviceViewModelList;
 				ConnectedDeviceInfo.DeviceDataList = DeviceList;
 				await _communicationService.StartListeningForUpdateAsync(4096, listeningCancellationToken);
-			});
+			}, listeningCancellationToken);
 		}
+
+        public void DisconnectDevice()
+        {
+            _listeningCancellationSource.Cancel();
+			_communicationService.ClearNetworkStream();
+        }
 	}
 }

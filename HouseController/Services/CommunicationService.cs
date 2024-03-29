@@ -1,50 +1,55 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
-using System.Threading.Tasks;
-using CommunityToolkit.Maui.Core.Extensions;
 using HouseController.Extensions;
-using HouseController.Models;
 using HouseController.Shared;
 using HouseController.ViewModels;
-using HouseController.Views;
-using HouseController.Views.PopUps;
 using Newtonsoft.Json;
 using DeviceInfo = HouseController.Models.DeviceInfo;
 
 namespace HouseController.Services
 {
 	public class CommunicationService : ICommunicationService
-	{
-		public NetworkStream EspNetworkStream { get; set; }
+    {
+        public NetworkStream? EspNetworkStream { get; set; }
 
-		public SemaphoreSlim _deviceSendingSemaphore = new SemaphoreSlim(1, 1);
+		private readonly SemaphoreSlim _deviceSendingSemaphore = new(1, 1);
+
+		private const int ESPPORT = 2500;
 
 		public void SetNetworkStream(NetworkStream espNetworkStream)
 		{
 			EspNetworkStream = espNetworkStream;
 		}
 
-		public NetworkStream GetNetworkStream()
+		public NetworkStream? GetNetworkStream()
 		{
 			return EspNetworkStream;
 		}
 
+        public void ClearNetworkStream()
+        {
+            if (EspNetworkStream == null)
+            {
+                return;
+            }
+			EspNetworkStream.Close();
+            EspNetworkStream = null;
+        }
+
 		public async Task<bool> ConnectToDeviceAsync(
 			string ip,
 			int port,
-			CancellationToken cancellationToken
+			CancellationToken cancellationToken = new()
 		)
 		{
 			var tcpClient = new TcpClient();
 			try
 			{
+				cancellationToken.ThrowIfCancellationRequested();
 				await tcpClient.ConnectAsync(ip, port, cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
 				if (tcpClient.Connected)
 				{
 					var networkStream = tcpClient.GetStream();
@@ -66,6 +71,8 @@ namespace HouseController.Services
 		)
 		{
 			var receivedData = new byte[bufferSize];
+            if (EspNetworkStream == null)
+                return [];
 			await EspNetworkStream.WriteAsync("InDt".EncodeMessage());
 			while (!EspNetworkStream.DataAvailable)
 			{
@@ -74,23 +81,34 @@ namespace HouseController.Services
 				await Task.Delay(50);
 			}
 
-			var buffer = await EspNetworkStream.ReadAsync(receivedData);
+			var buffer = await EspNetworkStream.ReadAsync(receivedData, cancellationToken);
 			var receivedString = receivedData.DecodeMessage(buffer);
-			Debug.WriteLine(string.Format("Received Initial Data: {0}", receivedString));
+			Debug.WriteLine($"Received Initial Data: {receivedString}");
 			var jsonObject = JsonConvert.DeserializeObject<ObservableCollection<DeviceInfo>>(
 				receivedString
 			);
 			return jsonObject ?? [];
 		}
 
-		public async Task SendDeviceChangeAsync(int id, string dataType, string dataValue)
+		public async Task SendDeviceChangeAsync(int id, string dataType, params string[] dataValue)
 		{
 			await _deviceSendingSemaphore.WaitAsync();
 			try
-			{
-				var dataToSend = (
-					string.Format("Update;{0};{1};{2}", id.ToString(), dataType, dataValue)
-				).EncodeMessage();
+            {
+                var stringToSend = $"Update;{id};{dataType};";
+                if (dataValue.Length > 1)
+                {
+                    foreach (var value in dataValue)
+                    {
+                        stringToSend += ($"{value}-");
+                    }
+                    stringToSend = stringToSend.Remove(stringToSend.Length-1);
+                }
+                else
+                {
+                    stringToSend += dataValue.First();
+                }
+				var dataToSend = stringToSend.EncodeMessage();
 				await EspNetworkStream.WriteAsync(dataToSend);
 			}
 			finally
@@ -111,7 +129,7 @@ namespace HouseController.Services
 
 		public void DisconnectFromDevice()
 		{
-			EspNetworkStream.Close();
+			EspNetworkStream.Dispose();
 			_deviceSendingSemaphore.Release();
 		}
 
@@ -123,38 +141,61 @@ namespace HouseController.Services
 			var deviceDataList = ConnectedDeviceInfo.DeviceDataList;
 			//Endless Loop to keep checking all the time if new information was received
 			while (true)
-			{
-				if (EspNetworkStream.DataAvailable)
-				{
-					var buffer = new byte[bufferSize];
-					var bytesRead = await EspNetworkStream.ReadAsync(buffer, cancellationToken);
-					var data = buffer.DecodeMessage(bytesRead);
+            {
+				if(EspNetworkStream == null)
+					break;
+                if (EspNetworkStream.DataAvailable)
+                {
+                    var buffer = new byte[bufferSize];
+                    var bytesRead = await EspNetworkStream.ReadAsync(buffer, cancellationToken);
+                    var data = buffer.DecodeMessage(bytesRead);
 
-					if (data.StartsWith("Updated"))
-					{
-						var dataParsed = data.Split(";");
-						int updatedId;
-						if (int.TryParse(dataParsed[1], out updatedId) == false)
-						{
-							//Data error
-						}
-						var updatedDataType = dataParsed[2];
-						var updatedDataValue = dataParsed[3];
+                    if (data.StartsWith("Updated"))
+                    {
+                        var dataParsed = data.Split(";");
+                        if (int.TryParse(dataParsed[1], out var updatedId) == false)
+                        {
+                            //Data error
+                        }
 
-						foreach (var device in deviceDataList)
-						{
-							if (device.Id != updatedId)
-								continue;
-							MainThread.BeginInvokeOnMainThread(() =>
-							{
+                        var updatedDataType = dataParsed[2];
+                        var updatedDataValue = dataParsed[3];
+
+                        foreach (var device in deviceDataList)
+                        {
+                            if (device.Id != updatedId)
+                                continue;
+                            MainThread.BeginInvokeOnMainThread(() =>
+                            {
                                 device.UpdateDeviceView(updatedDataValue, updatedDataType);
-                            });	
-						}
-					}
-				}
-				cancellationToken.ThrowIfCancellationRequested();
-				await Task.Delay(50);
-			}
+                            });
+                        }
+                    }
+                }
+                await Task.Delay(50);
+            }
 		}
-	}
+
+		//TODO: Apply good practices
+        public async Task<string> CheckDevice(string ip, int timeout)
+        {
+            var checkerTcpClient = new UdpClient();
+			var timeoutCancellationTokenSource = new CancellationTokenSource();
+			timeoutCancellationTokenSource.CancelAfter(timeout);
+			try
+			{
+				checkerTcpClient.Send("1".EncodeMessage(), ip, ESPPORT);
+				var receivedData = await checkerTcpClient.ReceiveAsync(timeoutCancellationTokenSource.Token);
+				if (receivedData.Buffer.DecodeMessage(1) == "1")
+				{
+					return ip;
+				}
+			}
+			catch(Exception e) 
+			{
+				//Debug.WriteLine(e.Message);
+			}
+            return "";
+        }
+    }
 }

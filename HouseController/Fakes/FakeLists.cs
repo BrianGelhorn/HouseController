@@ -15,20 +15,15 @@ namespace HouseController.Fakes
 
 		public static ObservableCollection<TimeInfo> TimesList { get; } =
 		[
-			new TimeInfo() { Time = "21:19", TimeStatus = 1 },
-			new TimeInfo() { Time = "21:19", TimeStatus = 1 },
-			new TimeInfo() { Time = "21:19", TimeStatus = 1 },
-			new TimeInfo() { Time = "21:19", TimeStatus = 1 },
-			new TimeInfo() { Time = "21:19", TimeStatus = 1 },
-			new TimeInfo() { Time = "21:19", TimeStatus = 1 },
-			new TimeInfo() { Time = "21:19", TimeStatus = 1 },
-			new TimeInfo() { Time = "12:31", TimeStatus = 1 },
-			new TimeInfo() { Time = "12:31", TimeStatus = 1 },
-			new TimeInfo() { Time = "12:31", TimeStatus = 1 },
-			new TimeInfo() { Time = "12:31", TimeStatus = 1 },
-			new TimeInfo() { Time = "12:31", TimeStatus = 0 },
-			new TimeInfo() { Time = "12:31", TimeStatus = 0 },
-			new TimeInfo() { Time = "14:50", TimeStatus = 1 }
+			new TimeInfo("21:19", 1),
+            new TimeInfo("21:13", 0),
+            new TimeInfo("12:19", 0),
+            new TimeInfo("11:19", 1),
+            new TimeInfo("23:19", 1),
+            new TimeInfo("00:00", 1),
+            new TimeInfo("21:19", 0),
+            new TimeInfo("21:15", 1),
+            new TimeInfo("21:19", 1)
 		];
 
 		//public ObservableCollection<DeviceInfo> DeviceDataList { get; } =

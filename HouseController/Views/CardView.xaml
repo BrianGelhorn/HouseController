@@ -21,7 +21,7 @@
 						Text="{Binding Time}"
 						VerticalTextAlignment="Center" />
 					<HorizontalStackLayout.GestureRecognizers>
-						<TapGestureRecognizer Command="{Binding OnTimeTappedCommand}" CommandParameter="{Binding .}" />
+						<TapGestureRecognizer />
 					</HorizontalStackLayout.GestureRecognizers>
 				</HorizontalStackLayout>
 			</DataTemplate>
