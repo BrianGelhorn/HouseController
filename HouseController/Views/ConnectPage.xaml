@@ -29,7 +29,7 @@
 			FontSize="Title"
 			HorizontalTextAlignment="Center"
 			Text="Busqueda Automatica" />
-		<Border StrokeThickness="1">
+		<Border StrokeShape="RoundRectangle 10" HeightRequest="200" StrokeThickness="1" Margin="16, 0, 16, 0">
 			<ListView
 				ItemTemplate="{StaticResource AutomaticSearchDt}"
 				ItemsSource="{Binding IpList}"
@@ -49,7 +49,7 @@
 		<Label
 			FontSize="Title"
 			HorizontalTextAlignment="Center"
-			Text="Busqueda Manual" />
-		<Entry IsPassword="False" Keyboard="Text" />
+			Text="Conectarse Manualmente" />
+		<Entry  IsPassword="False" Keyboard="Text" HeightRequest="10" Margin="16, 0, 16, 0"/>
 	</VerticalStackLayout>
 </ContentPage>

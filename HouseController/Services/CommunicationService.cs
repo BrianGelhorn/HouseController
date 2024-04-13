@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using HouseController.Extensions;
 using HouseController.Shared;
@@ -172,30 +173,8 @@ namespace HouseController.Services
                         }
                     }
                 }
-                await Task.Delay(50);
+                await Task.Delay(50, cancellationToken);
             }
 		}
-
-		//TODO: Apply good practices
-        public async Task<string> CheckDevice(string ip, int timeout)
-        {
-            var checkerTcpClient = new UdpClient();
-			var timeoutCancellationTokenSource = new CancellationTokenSource();
-			timeoutCancellationTokenSource.CancelAfter(timeout);
-			try
-			{
-				checkerTcpClient.Send("1".EncodeMessage(), ip, ESPPORT);
-				var receivedData = await checkerTcpClient.ReceiveAsync(timeoutCancellationTokenSource.Token);
-				if (receivedData.Buffer.DecodeMessage(1) == "1")
-				{
-					return ip;
-				}
-			}
-			catch(Exception e) 
-			{
-				//Debug.WriteLine(e.Message);
-			}
-            return "";
-        }
     }
 }
