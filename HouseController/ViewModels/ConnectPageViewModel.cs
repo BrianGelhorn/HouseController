@@ -1,48 +1,30 @@
 ﻿using System.Collections.ObjectModel;
-using System.Net;
+using System.Diagnostics.CodeAnalysis;
 using System.Net.Sockets;
-using System.Reactive.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HouseController.Extensions;
 using HouseController.Services;
 using HouseController.Views;
 using HouseController.Views.PopUps;
-using Debug = System.Diagnostics.Debug;
 using Zeroconf;
 
 namespace HouseController.ViewModels
 {
-    public partial class ConnectPageViewModel : ObservableObject
+    public partial class ConnectPageViewModel(
+        ICommunicationService communicationService,
+        INavigationService navigationService)
+        : ObservableObject
     {
-        public ObservableCollection<string> IpList { get; set; }
+        [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")] 
+        public ObservableCollection<string> IpList { get; set; } = [];
 
-        private ICommunicationService communicationService;
-        private INavigationService navigationService;
-
-        private List<string> ipListToCheck = [];
-        private List<string> ipListToIgnore = [];
-        private bool scanDevices = true;
-        public bool ScanDevices { get => scanDevices; set { scanDevices = value;
+        private bool _scanDevices = true;
+        private bool ScanDevices { get => _scanDevices; set { _scanDevices = value;
             Task.Run(StartDeviceScanning).ConfigureAwait(false);
         } }
         public void SetScanDevices(bool status) { ScanDevices = status; }
-        public bool GetScanDevices() { return ScanDevices; }
-
-        public ConnectPageViewModel(
-            ICommunicationService communicationService,
-            INavigationService navigationService
-        )
-        {
-            this.communicationService = communicationService;
-            this.navigationService = navigationService;
-            //Add all the possible private IPs to check
-            for (int i = 1; i < 255; i++)
-            {
-                ipListToCheck.Add($"192.168.0.{i}");
-            }
-            IpList = [];
-        }
+        private bool GetScanDevices() { return ScanDevices; }
 
         private async Task StartDeviceScanning()
         {
@@ -50,39 +32,30 @@ namespace HouseController.ViewModels
             {
                 const string protocol = "_esp._tcp.local.";
                 const string deviceDisplayName = "HouseControllerESP";
+                
+                //Temporal list to save the IPs of the new scan
                 var newIpList = new List<string>();
                 try
                 {
                     var resolvedHost = await ZeroconfResolver.ResolveAsync(protocol);
-                    foreach (var service in resolvedHost)
-                    {
-                        if (service.DisplayName == deviceDisplayName)
-                        {
-                            var serviceIp = service.IPAddress;
-                            newIpList.Add(serviceIp);
-                        }
-                    }
-
+                    newIpList.AddRange(resolvedHost.Where(service => service.DisplayName == deviceDisplayName).Select(service => service.IPAddress));
+                    
+                    //If an ip from IpList doesn't appear on the new scan, remove it from IpList
                     for (var i = 0; i < IpList.Count; i++)
                     {
                         var ip = IpList[i];
-                        if (!newIpList.Contains(ip))
-                        {
-                            Application.Current?.Dispatcher.Dispatch(() => { IpList.Remove(ip); });
-                        }
+                        if (newIpList.Contains(ip)) continue;
+                        Application.Current?.Dispatcher.Dispatch(() => IpList.Remove(ip));
                     }
-
+                    
+                    //If the new scan has an ip that is not on the IpList, add it to the IpList
                     foreach (var ip in newIpList.Where(ip => !IpList.Contains(ip)))
                     {
-                        Application.Current?.Dispatcher.Dispatch(() =>
-                        {
-                            IpList.Add(ip);
-                        });
+                        Application.Current?.Dispatcher.Dispatch(() => IpList.Add(ip));
                     }
                 }
                 catch (Exception e)
                 {
-                    //Check if the exception is when "No such host is known" so we can clear the list when there are no HouseControllers
                     if(e.GetType() == typeof(SocketException)) Application.Current?.Dispatcher.Dispatch(() => { IpList.Clear(); });
                 }
                 await Task.Delay(100);
@@ -107,7 +80,7 @@ namespace HouseController.ViewModels
                     throw new Exception("Connecting Failed");
                 }
             }
-            catch (Exception e)
+            catch
             {
                 var errorConnectingPopup = new ErrorConnectingPopup(ip);
                 await errorConnectingPopup.ShowAsPopupAndWaitAsync();
